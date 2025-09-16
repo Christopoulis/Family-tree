@@ -258,6 +258,64 @@
     </div>
 
     <script>
+        // Auto-fit the family tree horizontally so the entire chart is visible
+        // on initial load and when the window is resized.
+        function fitTreeToContainer() {
+            const container = document.querySelector('.tree-container');
+            const tree = document.querySelector('.family-tree');
+
+            if (!container || !tree) return;
+
+            // Reset any previous transform to measure natural width
+            tree.style.transform = '';
+            tree.style.transformOrigin = 'top left';
+
+            // Measure widest generation (natural width)
+            let maxWidth = 0;
+            const generations = tree.querySelectorAll('.generation');
+            generations.forEach(g => {
+                const rect = g.getBoundingClientRect();
+                maxWidth = Math.max(maxWidth, rect.width);
+            });
+
+            // If there are no generations measured, fall back to tree scrollWidth
+            if (maxWidth === 0) maxWidth = tree.scrollWidth || container.clientWidth;
+
+            const containerWidth = container.clientWidth - 20; // small padding allowance
+
+            // If tree is wider than container, scale down; if smaller, scale up to fit nicely
+            let scale = 1;
+            if (maxWidth > containerWidth) {
+                scale = containerWidth / maxWidth;
+            } else {
+                // Optionally expand slightly to use available space but don't exceed 1.2
+                scale = Math.min(1.0, containerWidth / maxWidth);
+            }
+
+            tree.style.transition = 'transform 300ms ease';
+            tree.style.transform = `scale(${scale})`;
+        }
+
+        // Debounce helper
+        function debounce(fn, delay = 150) {
+            let t;
+            return function(...args) {
+                clearTimeout(t);
+                t = setTimeout(() => fn.apply(this, args), delay);
+            };
+        }
+
+        window.addEventListener('load', () => {
+            fitTreeToContainer();
+        });
+
+        window.addEventListener('resize', debounce(() => {
+            // Remove transform briefly to recalc natural sizes
+            const tree = document.querySelector('.family-tree');
+            if (tree) tree.style.transform = '';
+            fitTreeToContainer();
+        }, 150));
+
         const familyData = {
             valone: {
                 name: "Valone Presley",
