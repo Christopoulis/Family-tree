@@ -128,6 +128,13 @@
         .generation-3 { background: linear-gradient(145deg, #f4ecf7, #e8daef); }
         .generation-4 { background: linear-gradient(145deg, #e3f2fd, #bbdefb); }
 
+        /* Highlight for the current user */
+        .you {
+            background: linear-gradient(145deg, #fff3e0, #ffe0b2);
+            border-color: #fb8c00;
+            color: #4e342e;
+        }
+
         .info-panel {
             position: fixed;
             top: 50%;
@@ -157,19 +164,32 @@
             color: #e74c3c;
         }
 
+        /* Keep generations as horizontal rows on all screen sizes.
+           Allow the tree container to scroll horizontally on small screens
+           instead of vertically stacking generation rows. */
         @media (max-width: 768px) {
+            .family-tree {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 10px; /* give space for scrollbar */
+            }
+
             .generation {
-                flex-direction: column;
+                display: inline-flex; /* keep items in a row */
+                flex-direction: row;
+                gap: 20px;
+                vertical-align: top;
+                min-width: 100%; /* allow generation to take full width */
+                box-sizing: border-box;
+            }
+
+            .couple {
+                flex-direction: row;
                 gap: 20px;
             }
-            
-            .couple {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
+
             .person {
-                min-width: 250px;
+                min-width: 200px;
             }
         }
     </style>
@@ -179,7 +199,7 @@
         <h1>Family Tree</h1>
         
         <div class="family-tree">
-            <!-- Great-Great-Great Aunt/Uncle and Great-Great-Grandfather Generation -->
+            <!-- Great-Great-Great Aunt/Uncle Generation -->
             <div class="generation">
                 <div class="person generation-1" onclick="showInfo('valone')">
                     <div class="person-name">Valone Presley</div>
@@ -189,6 +209,11 @@
                     <div class="person-name">Clara Presley</div>
                     <div class="person-relation">Great-Great-Great Aunt</div>
                 </div>
+                <div class="connection-line vertical-line"></div>
+            </div>
+
+            <!-- Great-Great-Grandfather (descendant of Valone & Clara) -->
+            <div class="generation">
                 <div class="person generation-2" onclick="showInfo('george')">
                     <div class="person-name">George Webster</div>
                     <div class="person-relation">Great-Great-Grandfather</div>
@@ -216,7 +241,7 @@
 
             <!-- Your Generation -->
             <div class="generation">
-                <div class="person generation-4" onclick="showInfo('emily')">
+                <div class="person generation-4 you" onclick="showInfo('emily')">
                     <div class="person-name">Emily</div>
                     <div class="person-relation">You</div>
                 </div>
