@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .tree-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 40px;
+            overflow-x: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .family-tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .generation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            width: 100%;
+            position: relative;
+        }
+
+        .person {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            border: 3px solid #3498db;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .person:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+            border-color: #e74c3c;
+        }
+
+        .person.active {
+            background: linear-gradient(145deg, #3498db, #2980b9);
+            color: white;
+            border-color: #2c3e50;
+        }
+
+        .person-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .person.active .person-name {
+            color: white;
+        }
+
+        .person-relation {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .person.active .person-relation {
+            color: #ecf0f1;
+        }
+
+        .couple {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            position: relative;
+        }
+
+        .couple::after {
+            content: '💕';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5em;
+        }
+
+        .connection-line {
+            position: absolute;
+            background: #3498db;
+            z-index: 1;
+        }
+
+        .vertical-line {
+            width: 3px;
+            height: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 100%;
+        }
+
+        .generation-1 { background: linear-gradient(145deg, #e8f6f3, #d5f4e6); }
+        .generation-2 { background: linear-gradient(145deg, #fef9e7, #fcf3cf); }
+        .generation-3 { background: linear-gradient(145deg, #f4ecf7, #e8daef); }
+        .generation-4 { background: linear-gradient(145deg, #e3f2fd, #bbdefb); }
+
+        .info-panel {
+            position: fixed;
+            top: 50%;
+            right: -350px;
+            transform: translateY(-50%);
+            width: 300px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 25px;
+            transition: right 0.3s ease;
+            z-index: 1000;
+        }
+
+        .info-panel.show {
+            right: 20px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .generation {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .couple {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .person {
+                min-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tree-container">
+        <h1>Family Tree</h1>
+        
+        <div class="family-tree">
+            <!-- Great-Great-Great Aunt/Uncle and Great-Great-Grandfather Generation -->
+            <div class="generation">
+                <div class="person generation-1" onclick="showInfo('valone')">
+                    <div class="person-name">Valone Presley</div>
+                    <div class="person-relation">Great-Great-Great Uncle</div>
+                </div>
+                <div class="person generation-1" onclick="showInfo('clara')">
+                    <div class="person-name">Clara Presley</div>
+                    <div class="person-relation">Great-Great-Great Aunt</div>
+                </div>
+                <div class="person generation-2" onclick="showInfo('george')">
+                    <div class="person-name">George Webster</div>
+                    <div class="person-relation">Great-Great-Grandfather</div>
+                </div>
+                <div class="connection-line vertical-line"></div>
+            </div>
+
+            <!-- Great-Grandmother Generation -->
+            <div class="generation">
+                <div class="person generation-3" onclick="showInfo('grandma')">
+                    <div class="person-name">Grandma</div>
+                    <div class="person-relation">Great-Grandmother</div>
+                </div>
+                <div class="connection-line vertical-line"></div>
+            </div>
+
+            <!-- Parent Generation -->
+            <div class="generation">
+                <div class="person generation-4" onclick="showInfo('mom')">
+                    <div class="person-name">Mom</div>
+                    <div class="person-relation">Mother</div>
+                </div>
+                <div class="connection-line vertical-line"></div>
+            </div>
+
+            <!-- Your Generation -->
+            <div class="generation">
+                <div class="person generation-4" onclick="showInfo('emily')">
+                    <div class="person-name">Emily</div>
+                    <div class="person-relation">You</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-panel" id="infoPanel">
+        <button class="close-btn" onclick="hideInfo()">×</button>
+        <div id="infoContent">
+            <h3>Select a family member</h3>
+            <p>Click on any family member to see more information about them.</p>
+        </div>
+    </div>
+
+    <script>
+        const familyData = {
+            valone: {
+                name: "Valone Presley",
+                relation: "Great-Great-Great Uncle",
+                description: "Uncle to George Webster. Married to Clara Presley.",
+                generation: "Older generation, uncle to George"
+            },
+            clara: {
+                name: "Clara Presley",
+                relation: "Great-Great-Great Aunt",
+                description: "Aunt to George Webster. Married to Valone Presley.",
+                generation: "Older generation, aunt to George"
+            },
+            george: {
+                name: "George Webster",
+                relation: "Great-Great-Grandfather",
+                description: "Nephew of Valone and Clara Presley. Grandma's father.",
+                generation: "Born in the early 1900s"
+            },
+            grandma: {
+                name: "Grandma",
+                relation: "Great-Grandmother",
+                description: "Daughter of George Webster. Mother of Mom.",
+                generation: "Parent generation to Mom"
+            },
+            mom: {
+                name: "Mom",
+                relation: "Mother",
+                description: "Daughter of Grandma. Mother of Emily.",
+                generation: "Parent to Emily"
+            },
+            emily: {
+                name: "Emily",
+                relation: "You",
+                description: "Daughter of Mom. Current generation.",
+                generation: "Present day"
+            }
+        };
+
+        function showInfo(personId) {
+            const person = familyData[personId];
+            const infoContent = document.getElementById('infoContent');
+            const infoPanel = document.getElementById('infoPanel');
+            
+            // Remove active class from all persons
+            document.querySelectorAll('.person').forEach(p => p.classList.remove('active'));
+            
+            // Add active class to clicked person
+            event.target.closest('.person').classList.add('active');
+            
+            infoContent.innerHTML = `
+                <h3>${person.name}</h3>
+                <p><strong>Relationship:</strong> ${person.relation}</p>
+                <p><strong>Generation:</strong> ${person.generation}</p>
+                <p>${person.description}</p>
+                <hr>
+                <p><em>Click on other family members to learn more about them!</em></p>
+            `;
+            
+            infoPanel.classList.add('show');
+        }
+
+        function hideInfo() {
+            const infoPanel = document.getElementById('infoPanel');
+            infoPanel.classList.remove('show');
+            
+            // Remove active class from all persons
+            document.querySelectorAll('.person').forEach(p => p.classList.remove('active'));
+        }
+
+        // Close info panel when clicking outside
+        document.addEventListener('click', function(event) {
+            const infoPanel = document.getElementById('infoPanel');
+            const clickedPerson = event.target.closest('.person');
+            
+            if (!clickedPerson && !infoPanel.contains(event.target)) {
+                hideInfo();
+            }
+        });
+    </script>
+</body>
+</html>
